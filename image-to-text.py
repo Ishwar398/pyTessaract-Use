@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import os 
 import flask 
 import io 
+from ImageOperations import process_image_for_ocr
 
 
 UPLOAD_FOLDER = 'E:/Projects/Image-Reader/uploads' 
@@ -31,7 +32,10 @@ def ExtractText():
             pathToSave = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
             file.save(pathToSave) 
 
-            image_text = pytesseract.image_to_string(Image.open(pathToSave))
+            processed_image = process_image_for_ocr(Image.open(pathToSave))
+            #processed_image.save(pathToSave)
+
+            image_text = pytesseract.image_to_string(Image.open(processed_image))
             data["text"] = image_text 
             json_data=json.dumps(data) 
             return json_data
